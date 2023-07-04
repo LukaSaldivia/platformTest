@@ -5,6 +5,7 @@ let ctx = c.getContext('2d');
 
 const WKey = document.querySelector('#WKey')
 const AKey = document.querySelector('#AKey')
+const SKey = document.querySelector('#SKey')
 const DKey = document.querySelector('#DKey')
 const RKey = document.querySelector('#RKey')
 const isOnAirLight = document.querySelector('#isOnAirLight')
@@ -37,10 +38,6 @@ let suelos = [
     new Suelo(20, 100, 500),
 ]
 
-
-
-
-
 let sizes = {
     w: 650,
     h: 550
@@ -48,8 +45,6 @@ let sizes = {
 
 c.width = sizes.w;
 c.height = sizes.h;
-
-
 
 class Fisico{
     constructor(xpos, ypos){
@@ -62,11 +57,7 @@ class Fisico{
         this.speed = 10;
         this.jumpForce = 22
 
-
-
-
         this.mass = 15;
-
 
         this.xd = 0
 
@@ -74,13 +65,8 @@ class Fisico{
         this.yf = 0
         this.yd = 0
 
-
         this.isOnAir = false
 
-        
-        
-        
-        
     }
     
     draw(ctx){
@@ -98,14 +84,11 @@ class Fisico{
             
             this.ypos += this.yd
             this.xpos += this.xd
-            
+    
             if(this.isOnAir){
                 this.yd += this.mass/G
             }
-
-            this.collisionSuelo()
-            
-
+        this.collisionSuelo()
         this.draw(ctx);
     }
     jump() {
@@ -114,7 +97,9 @@ class Fisico{
                 this.yd -= this.jumpForce+this.yd;
             }
           }
-    
+        if(playerYmovement[playerYmovement.length-1] == 'down'){
+            this.isOnAir = true
+        }
     }
     move() {
         if(playerXmovement[playerXmovement.length-1] == 'right'){
@@ -123,17 +108,14 @@ class Fisico{
           if(playerXmovement[playerXmovement.length-1] == 'left'){
             this.xd = -this.speed;
           }
-        
           if(playerXmovement.length == 0){
             player.xd = 0;
           }
     }
 
     canJump(){
-        
         this.yi = this.yf
         this.yf = this.ypos
-
         this.isOnAir = this.yi != this.yf
     }
 
@@ -151,26 +133,16 @@ class Fisico{
         ){  
             contador++;
             altura = suelo.ypos - this.largo
-
         }
-
-
-
         })
 
-        if (contador > 0) {
+        if (contador > 0 && playerYmovement[playerYmovement.length-1] != 'down') {
             this.ypos = altura
             this.isOnAir = false
         }else{
             this.isOnAir = true
         }
     }
-    
-
-
-
-
-
 
 }
 
@@ -192,7 +164,7 @@ function loop() {
 
 
 
-    ctx.fillStyle = "#00222277";
+    ctx.fillStyle = "#002222";
     ctx.fillRect(0,0,c.width,c.height)
 
     
@@ -232,9 +204,16 @@ document.addEventListener('keydown', (e)=>{
             player.xpos = 100
             player.ypos = 300
             player.yd = 0
+            player.yi = 0
+            player.yf = 1
+            player.isOnAir = true
             RKey.classList.add('active')
             break;
-
+            
+        case 'KeyS':
+            SKey.classList.add('active')
+            playerYmovement.push('down')
+            break;
     
         default:
             break;
@@ -254,6 +233,10 @@ document.addEventListener('keyup', (e)=>{
         case 'KeyW':
             playerYmovement = playerYmovement.filter(mov => mov != 'up');
             WKey.classList.remove('active')
+            break;
+        case 'KeyS':
+            playerYmovement = playerYmovement.filter(mov => mov != 'down');
+            SKey.classList.remove('active')
             break;
 
         case 'KeyR':
