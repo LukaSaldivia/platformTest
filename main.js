@@ -32,10 +32,10 @@ class Suelo{
 }
 
 let suelos = [
-    new Suelo(20, 500, 350),
+    new Suelo(0, 500, 500),
     new Suelo(400, 400, 100),
-    new Suelo(550, 250, 100),
-    new Suelo(20, 100, 500),
+    new Suelo(200, 250, 100),
+    new Suelo(200, 100, 500),
 ]
 
 let sizes = {
@@ -54,7 +54,7 @@ class Fisico{
         this.largo = 50
         this.color = '#395'
         
-        this.speed = 10;
+        this.speed = 10
         this.jumpForce = 22
 
         this.mass = 15;
@@ -88,9 +88,13 @@ class Fisico{
             if(this.isOnAir){
                 this.yd += this.mass/G
             }
-        this.collisionSuelo()
-        this.draw(ctx);
-    }
+            this.collisionSuelo()
+
+
+            this.draw(ctx);
+
+
+        }
     jump() {
         if(playerYmovement[playerYmovement.length-1] == 'up'){
             if (!this.isOnAir) {

@@ -12,9 +12,7 @@ body{
     background-color: #366;
 }
 
-#c{
-    border-radius: 0 3rem 3rem 0;
-}
+
 
 .lights{
     display: flex;
