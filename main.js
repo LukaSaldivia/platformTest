@@ -3,19 +3,19 @@ const G = 9.81;
 let c = document.querySelector('#c');
 let ctx = c.getContext('2d');
 
-const WKey = document.querySelector('#WKey')
-const AKey = document.querySelector('#AKey')
-const SKey = document.querySelector('#SKey')
-const DKey = document.querySelector('#DKey')
-const RKey = document.querySelector('#RKey')
-const isOnAirLight = document.querySelector('#isOnAirLight')
+// const WKey = document.querySelector('#WKey')
+// const AKey = document.querySelector('#AKey')
+// const SKey = document.querySelector('#SKey')
+// const DKey = document.querySelector('#DKey')
+// const RKey = document.querySelector('#RKey')
+// const isOnAirLight = document.querySelector('#isOnAirLight')
 
 class Suelo{
     constructor(xpos, ypos, largo){
         this.xpos = xpos
         this.ypos = ypos
         this.largo = largo
-        this.alto = 20
+        this.alto = 15
         this.color = '#aaa'
     }
 
@@ -46,15 +46,17 @@ let sizes = {
 c.width = sizes.w;
 c.height = sizes.h;
 
+ctx.imageSmoothingEnabled = false;
+
 class Fisico{
     constructor(xpos, ypos){
         // Basics
         this.xpos = xpos
         this.ypos = ypos
         this.largo = 50
-        this.color = '#395'
+        this.color = '#F0F00000'
         
-        this.speed = 10
+        this.speed = 5
         this.jumpForce = 22
 
         this.mass = 15;
@@ -99,6 +101,7 @@ class Fisico{
         if(playerYmovement[playerYmovement.length-1] == 'up'){
             if (!this.isOnAir) {
                 this.yd -= this.jumpForce+this.yd;
+                playerSprite.play('jump_8.png',7,100)
             }
           }
         if(playerYmovement[playerYmovement.length-1] == 'down'){
@@ -108,12 +111,21 @@ class Fisico{
     move() {
         if(playerXmovement[playerXmovement.length-1] == 'right'){
             this.xd = this.speed;
-          }
-          if(playerXmovement[playerXmovement.length-1] == 'left'){
+            playerSprite.flip = false
+            if (!this.isOnAir) {
+                playerSprite.play('run_6.png',6,60)
+            }
+        }
+        if(playerXmovement[playerXmovement.length-1] == 'left'){
             this.xd = -this.speed;
+            playerSprite.flip = true
+            if (!this.isOnAir) {
+                playerSprite.play('run_6.png',6,60)
+            }
           }
-          if(playerXmovement.length == 0){
+          if(playerXmovement.length == 0 && !this.isOnAir){
             player.xd = 0;
+            playerSprite.play('idle_4.png',4,150)
           }
     }
 
@@ -153,6 +165,24 @@ class Fisico{
 
 
 let player = new Fisico(100, 300)
+let playerSprite = new SpriteRenderer({
+    pos : {
+        x : player.xpos,
+        y : player.ypos
+    },
+    path : 'idle_4.png',
+    crop : {
+        width : 32,
+        height : 32
+    },
+    totalFrames : 4,
+    scale : {
+        x : 2,
+        y : 2
+    },
+    interval : 60
+})
+
 
 
 let playerXmovement = []
@@ -178,11 +208,14 @@ function loop() {
     player.update(ctx)
 
     if(player.isOnAir){
-        isOnAirLight.classList.add('active')
+        // isOnAirLight.classList.add('active')
     }else{
-        isOnAirLight.classList.remove('active')
+        // isOnAirLight.classList.remove('active')
     }
 
+    playerSprite.pos.x = player.xpos - player.largo/8
+    playerSprite.pos.y = player.ypos - player.largo/3.5
+    playerSprite.update(ctx)
     
 }
 
@@ -193,16 +226,16 @@ document.addEventListener('keydown', (e)=>{
     switch (e.code) {
         case 'KeyA':
             playerXmovement.push('left')
-            AKey.classList.add('active')
+            // AKey.classList.add('active')
             
             break;
         case 'KeyD':
             playerXmovement.push('right')
-            DKey.classList.add('active')
+            // DKey.classList.add('active')
             break;
         case 'KeyW':
             playerYmovement.push('up')
-            WKey.classList.add('active')
+            // WKey.classList.add('active')
             break;
         case 'KeyR':
             player.xpos = 100
@@ -210,12 +243,15 @@ document.addEventListener('keydown', (e)=>{
             player.yd = 0
             player.yi = 0
             player.yf = 1
+            player.xd = 0
             player.isOnAir = true
-            RKey.classList.add('active')
+            // RKey.classList.add('active')
+            // ctx.fillStyle = "#002222";
+            // ctx.fillRect(0,0,c.width,c.height)
             break;
             
         case 'KeyS':
-            SKey.classList.add('active')
+            // SKey.classList.add('active')
             playerYmovement.push('down')
             break;
     
@@ -228,23 +264,23 @@ document.addEventListener('keyup', (e)=>{
     switch (e.code) {
         case 'KeyA':
             playerXmovement = playerXmovement.filter(mov => mov != 'left');
-            AKey.classList.remove('active')
+            // AKey.classList.remove('active')
             break;
         case 'KeyD':
             playerXmovement = playerXmovement.filter(mov => mov != 'right');
-            DKey.classList.remove('active')
+            // DKey.classList.remove('active')
             break;
         case 'KeyW':
             playerYmovement = playerYmovement.filter(mov => mov != 'up');
-            WKey.classList.remove('active')
+            // WKey.classList.remove('active')
             break;
         case 'KeyS':
             playerYmovement = playerYmovement.filter(mov => mov != 'down');
-            SKey.classList.remove('active')
+            // SKey.classList.remove('active')
             break;
 
         case 'KeyR':
-            RKey.classList.remove('active')
+            // RKey.classList.remove('active')
             break;
     
         default:
