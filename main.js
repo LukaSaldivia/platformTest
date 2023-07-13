@@ -101,7 +101,7 @@ class Fisico{
         if(playerYmovement[playerYmovement.length-1] == 'up'){
             if (!this.isOnAir) {
                 this.yd -= this.jumpForce+this.yd;
-                playerSprite.play('jump_8.png',7,100)
+                playerSprite.play('character/jump_8.png',7,100)
             }
           }
         if(playerYmovement[playerYmovement.length-1] == 'down'){
@@ -113,19 +113,19 @@ class Fisico{
             this.xd = this.speed;
             playerSprite.flip = false
             if (!this.isOnAir) {
-                playerSprite.play('run_6.png',6,60)
+                playerSprite.play('character/run_6.png',6,60)
             }
         }
         if(playerXmovement[playerXmovement.length-1] == 'left'){
             this.xd = -this.speed;
             playerSprite.flip = true
             if (!this.isOnAir) {
-                playerSprite.play('run_6.png',6,60)
+                playerSprite.play('character/run_6.png',6,60)
             }
           }
           if(playerXmovement.length == 0 && !this.isOnAir){
             player.xd = 0;
-            playerSprite.play('idle_4.png',4,150)
+            playerSprite.play('character/idle_4.png',4,150)
           }
     }
 
@@ -170,7 +170,6 @@ let playerSprite = new SpriteRenderer({
         x : player.xpos,
         y : player.ypos
     },
-    path : 'idle_4.png',
     crop : {
         width : 32,
         height : 32
@@ -183,7 +182,8 @@ let playerSprite = new SpriteRenderer({
     interval : 60
 })
 
-
+playerSprite.spritesPath = ['character/run_6.png','character/jump_8.png','character/idle_4.png']
+playerSprite.loadImages()
 
 let playerXmovement = []
 let playerYmovement = []
@@ -196,8 +196,9 @@ function loop() {
     requestAnimationFrame(loop)
 
 
-
-
+    if (playerSprite.isLoaded()) {
+        
+    
     ctx.fillStyle = "#002222";
     ctx.fillRect(0,0,c.width,c.height)
 
@@ -216,7 +217,7 @@ function loop() {
     playerSprite.pos.x = player.xpos - player.largo/8
     playerSprite.pos.y = player.ypos - player.largo/3.5
     playerSprite.update(ctx)
-    
+}
 }
 
 loop()

@@ -7,7 +7,6 @@ class SpriteRenderer{
                 x : 0,
                 y : 0
             },
-            path : '',
             crop : {
                 width : 0,
                 height : 0
@@ -25,7 +24,7 @@ class SpriteRenderer{
             this.pos.x = this.pos.x || 0
             this.pos.y = this.pos.y || 0
 
-            this.path = attr.path || undefined
+            // this.path = attr.path || undefined
 
             this.crop = attr.crop || { width:0 , height:0 }
             this.crop.width = this.crop.width || 0
@@ -43,8 +42,8 @@ class SpriteRenderer{
             this.i = 0
             this.imageSection = 0
 
-            this.image = new Image()
-            this.image.src = this.path
+            this.image
+            // this.image.src = this.path
 
             this.timer = new Krono({
                 output : 1000,
@@ -57,8 +56,10 @@ class SpriteRenderer{
             this.spriteCtx = this.spriteCanvas.getContext('2d',{willReadFrequently: true}) 
 
             this.loadedSprites = []
-            this.loadedIndex = -1;
-            this.loadedSprites.push(this.image)
+            this.loadedIndex = undefined;
+            // this.loadedSprites.push(this.image)
+
+            this.spritesPath = []
 
 
 
@@ -119,20 +120,10 @@ class SpriteRenderer{
     play(path = '', totalFrames = this.totalFrames, interval = this.interval){
 
         let index = this.loadedSprites.findIndex( img => img.src.replace(document.URL,'') == path)
-        let actualIndex = this.loadedIndex
-        if (index >= 0) {
-            this.loadedIndex = index
-        }else{
-            this.image = new Image
-            this.image.src = path
-            this.loadedSprites.push(this.image)
-        }
-
+        let originalIndex = this.loadedIndex
+        this.loadedIndex = index
         
-        
-        // this.image.src = path
-        
-        if(this.loadedIndex != actualIndex){
+        if(this.loadedIndex != originalIndex){
             this.i = 0
             this.imageSection = 0
             this.totalFrames = totalFrames
@@ -140,12 +131,19 @@ class SpriteRenderer{
             this.timer.initial = this.interval
             this.timer.toInitial()
         }
-        
 
+    }
 
+    loadImages(){
+        this.spritesPath.forEach(path => {
+            this.image = new Image()
+            this.image.src = path
+            this.loadedSprites.push(this.image)
+        })
+    }
 
-
-        
+    isLoaded(){
+        return this.loadedSprites.every( img => img.complete)
     }
 
 }
